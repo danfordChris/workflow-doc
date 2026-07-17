@@ -1,0 +1,13 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Workflow Contract",
+      "description": "Skills for planning-first engineering workflows, including PRD and TRD generation under strict layer boundaries.",
+      "skills": [
+        "workflow-contract-companion"
+      ]
+    }
+  ]
+}
