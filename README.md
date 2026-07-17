@@ -104,7 +104,7 @@ The workflow setup command downloads this private workflow from authenticated Gi
 Manual fallback:
 
 ```bash
-git submodule add git@github.com:iPFSoftwares/workflow-contract.git .agents/workflows/workflow-contract
+git submodule add git@github.com:danfordChris/workflow-doc.git .agents/workflows/workflow-contract
 make -C .agents/workflows/workflow-contract check
 ```
 
@@ -227,13 +227,13 @@ Primary skill file:
 Install the repo's skills:
 
 ```bash
-npx skills add iPFSoftwares/workflow-contract
+npx skills add danfordChris/workflow-doc
 ```
 
 Install the workflow contract companion skill directly:
 
 ```bash
-npx skills add iPFSoftwares/workflow-contract --skill workflow-contract-companion
+npx skills add danfordChris/workflow-doc --skill workflow-contract-companion
 ```
 
 After installation, ask the agent to use `workflow-contract-companion` when generating PRD and TRD artifacts for a repo that follows this workflow.
@@ -244,8 +244,8 @@ The `skills.sh` directory indexes public GitHub repos after installs through the
 
 For this repo to appear there:
 
-1. Keep `iPFSoftwares/workflow-contract` public on GitHub.
-2. Install it at least once with `npx skills add iPFSoftwares/workflow-contract`.
+1. Keep `danfordChris/workflow-doc` public on GitHub.
+2. Install it at least once with `npx skills add danfordChris/workflow-doc`.
 3. Wait for telemetry ingestion and cache refresh.
 
 This repository contains multiple skills under `.agents/skills/`, so the repo page will list more than just `workflow-contract-companion`.
