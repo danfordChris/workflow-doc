@@ -18,7 +18,7 @@
 
 ## Unreleased
 
-Additive for the workflow package. The companion skill is renamed (see below).
+Additive for the workflow package (`spec/`, `templates/`, `scripts/`, `repo.config.json` — no incompatible change). The companion skill is renamed and 19 vendored third-party skills are removed (see below).
 
 ### Added
 
@@ -38,7 +38,14 @@ Additive for the workflow package. The companion skill is renamed (see below).
 ### Renamed
 
 - Companion skill `workflow-contract-companion` → `workflow` (directory `.agents/skills/workflow-contract-companion/` → `.agents/skills/workflow/`; SKILL.md `name:`, `skills-lock.json` key, `workflow.json` `skill`, `skills.sh.json`, `agents/openai.yaml` `$workflow` trigger). Install with `npx skills add danfordChris/workflow-doc --skill workflow`. Consumers using the old `--skill workflow-contract-companion` must update the name.
-- `init_workflow_contract.py` `SKILL_SOURCE` and `workflow_paths.SKILL_INSTALL_ROOT` now both resolve to `.agents/skills/workflow`, so `make check` no longer aborts with `INIT:error:Missing source skill directory` on a fresh checkout.
+- `init_workflow_contract.py` `SKILL_SOURCE` and `workflow_paths.SKILL_INSTALL_ROOT` now both resolve to `.agents/skills/workflow`. On rerun, init verifies an existing `.agents/skills/workflow/` is this skill (`SKILL.md` `name: workflow`) before skipping — an unrelated skill at that path now fails with a clear conflict instead of being silently kept.
+- `make check` no longer aborts with `INIT:error:Missing source skill directory` on a fresh checkout.
+
+### Removed
+
+- 19 vendored third-party skills that no `spec/*` doc, kept skill, or `README.md` references: `ask-matt`, `claude-handoff`, `design-an-interface`, `edit-article`, `git-guardrails-claude-code`, `grill-me`, `loop-me`, `migrate-to-shoehorn`, `obsidian-vault`, `resolving-merge-conflicts`, `scaffold-exercises`, `setup-pre-commit`, `setup-ts-deep-modules`, `teach`, `wizard`, `writing-beats`, `writing-fragments`, `writing-great-skills`, `writing-shape`. Their `skills-lock.json` entries are dropped.
+- Kept: the 16 companion skills the contract cites, the `workflow` skill, and the 4 those depend on (`grilling`, `prototype`, `improve-codebase-architecture`, `setup-matt-pocock-skills`).
+- Re-add any removed skill directly from upstream if a consumer relied on it: `npx skills add mattpocock/skills --skill <name>`.
 
 ---
 

@@ -77,11 +77,35 @@ def ensure_symlink(path: Path, target: str, dry_run: bool) -> None:
         path.symlink_to(target)
 
 
+def _skill_name(skill_md: Path) -> str | None:
+    if not skill_md.is_file():
+        return None
+    text = skill_md.read_text(encoding="utf-8", errors="ignore")
+    if not text.startswith("---"):
+        return None
+    end = text.find("\n---", 3)
+    front = text[3:end] if end != -1 else text
+    for line in front.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("name:"):
+            return stripped.split(":", 1)[1].strip().strip("\"'")
+    return None
+
+
 def copy_skill_source(dry_run: bool) -> None:
-    if SKILL_TARGET.exists():
-        return
     if not SKILL_SOURCE.exists():
         raise InitError(f"Missing source skill directory: {SKILL_SOURCE}")
+    expected = _skill_name(SKILL_SOURCE / "SKILL.md") or "workflow"
+    if SKILL_TARGET.exists():
+        if SKILL_TARGET.resolve() == SKILL_SOURCE.resolve():
+            return
+        found = _skill_name(SKILL_TARGET / "SKILL.md")
+        if found == expected:
+            return
+        raise InitError(
+            f"{SKILL_TARGET.relative_to(ROOT)} exists but is not the '{expected}' skill "
+            f"(found name: {found!r}). Move or remove it, then rerun."
+        )
     print(f"copy skill: {SKILL_SOURCE} -> {SKILL_TARGET.relative_to(ROOT)}")
     if not dry_run:
         SKILL_TARGET.parent.mkdir(parents=True, exist_ok=True)

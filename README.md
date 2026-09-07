@@ -84,7 +84,7 @@ flowchart LR
 
 ## From Idea to Docs
 
-Handing an agent an idea does **not** auto-generate a PRD, TRD, feature inventory, or tasks. The contract is policy, templates, a companion skill, and a validator — not a generator. An agent with the `workflow` skill loaded produces the docs **step by step, with a human approval gate between each stage**.
+Handing an agent an idea does **not** auto-generate a PRD, TRD, feature inventory, or tasks. The contract is policy, templates, a companion skill, and a validator — not a generator. An agent with the `workflow` skill loaded produces the docs **step by step, with a human approval gate before promotion into `docs/design/`**.
 
 ```mermaid
 flowchart TD
@@ -103,17 +103,18 @@ flowchart TD
     Ready -- yes --> Exec["Execution: one bounded task per session"]
     Exec --> Rev["Review: standards + spec, reconcile docs"]
 
-    Validator(["validate_workflow.py"]) -. checks shape / readiness<br/>at every stage .-> Prop
-    Validator -. .-> PRD
-    Validator -. .-> Plan
+    Validator(["validate_workflow.py"]) -. shape check .-> Prop
+    Validator -. shape + readiness check .-> Plan
 ```
+
+The single human approval gate is `proposed` → `docs/design/`. `Ideas do not become truth by being written.` Everything downstream of an approved design doc is agent work under that approval; the readiness gate (`Task passes readiness gate?`) is a script check, not a second human sign-off.
 
 What is and is not automatic:
 
 - **Not automatic**: authoring any doc. The agent writes them by following the companion skill; nothing is emitted from the idea in one shot.
-- **Not enforced**: that a given feature *has* a PRD or TRD. The validator never fails just because a design doc is missing.
-- **Enforced**: doc shape (`METADATA`), task readiness (`READINESS`), scope disjointness (`SCOPE`), legal status values (`TRANSITIONS`), required scaffold (`STRUCTURE`).
-- **Gated by a human**: promotion from `proposed` → `docs/design/`. `Ideas do not become truth by being written.`
+- **Not enforced**: that a given feature *has* a PRD or TRD, or that a PRD is well-formed. `validate_metadata.py` does not inspect `docs/design/` — a missing or malformed design doc passes.
+- **Enforced**: shape of proposals, tasks, phases, reviews, and the feature inventory (`METADATA`); task readiness (`READINESS`); scope disjointness (`SCOPE`); legal status values (`TRANSITIONS`); required scaffold directories/files (`STRUCTURE`).
+- **Gated by a human**: promotion from `proposed` → `docs/design/`, and nowhere else.
 
 For a single command that scaffolds the wayfinding/proposal/PRD/TRD/task stubs in one pass, you would add a new skill or script — the contract does not ship one.
 
