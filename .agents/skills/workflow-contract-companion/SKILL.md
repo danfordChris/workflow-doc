@@ -15,6 +15,7 @@ Read in this order before making any change:
 2. `.agents/workflows/workflow-contract/spec/guardrails-spec.md` — hard rules and enforcement categories
 3. `.agents/workflows/workflow-contract/spec/lifecycle-spec.md` — state transitions, readiness gate, completion gate
 4. `.agents/workflows/workflow-contract/spec/task-spec.md` — minimum viable task standard (required when creating or updating tasks)
+5. `.agents/workflows/workflow-contract/spec/feature-inventory-spec.md` — platform feature register: statuses, layer rules, update triggers (required when adding a feature or changing a phase/task status)
 
 ## Step 1: Classify
 
@@ -51,6 +52,7 @@ python3 .agents/workflows/workflow-contract/scripts/init_workflow_contract.py
 - New behavior not present in design → `docs/changes/proposed/` first.
 - Execution work → `docs/implementation/` only after design truth exists in `docs/design/`.
 - Status updates → `docs/implementation/status/` only.
+- Feature-level status rollup → `docs/implementation/feature-inventory/` (one directory per feature, one file per subfeature; created from `templates/feature-inventory/`). Update a subfeature `Status` whenever a linked phase or task changes state; add a feature directory or subfeature file whenever a proposal is adopted into `docs/design/`.
 - No duplicate truth across layers.
 
 ## Step 3A: Generate PRD And TRD In The Correct Layers

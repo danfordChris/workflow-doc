@@ -19,7 +19,7 @@ Three distinct modes. Do not conflate them.
 3. Align on requirements, constraints, and acceptance criteria. *(Thinking)*
 4. Record approved truth in `docs/design`. *(Thinking)*
 5. Convert truth into execution plan in `docs/implementation`. *(Thinking)*
-6. Break execution into phases and tasks. Each task must satisfy the task readiness standard and fit a bounded session budget. *(Thinking)*
+6. Break execution into phases and tasks. Each task must satisfy the task readiness standard and fit a bounded session budget. Register every capability as a directory in `docs/implementation/feature-inventory/`, broken into per-subfeature files. *(Thinking)*
 7. Implement against explicit tasks and checklists. *(Execution)*
 8. Review outcomes on both standards and spec correctness, then reconcile docs with actual state. *(Review)*
 9. Repeat for new requirements and deltas.
@@ -85,6 +85,16 @@ Multiple agents can work concurrently when:
 - When a session becomes mostly recap, create a handoff and resume in a fresh session.
 - Use AFK or headless runs only for bounded tasks with explicit stop conditions.
 - Design docs and task docs must be short enough to reread cheaply.
+
+## Feature Inventory
+
+- `docs/implementation/feature-inventory/` is the cross-phase register of every platform capability, its contribution to target capability, and its delivery status.
+- One directory per feature (e.g. `auth/`, `booking/`, `selling/`); one small file per subfeature; a `README.md` index at the root and per feature.
+- Create it from `templates/feature-inventory/`. Policy: `spec/feature-inventory-spec.md`.
+- It is an execution-planning rollup: it traces every subfeature file to `docs/design/`, and it does not replace dated logs in `docs/implementation/status/`.
+- The feature / subfeature split mirrors the decomposition of the idea in `docs/design/`; the backlog, phases, and tasks reference subfeature files by path and never redefine their behavior.
+- Populate it as planning proceeds: adopting a proposal creates `Pending` subfeature files; backlog and phase breakdown fills in evidence links; execution and review move statuses.
+- Update a subfeature `Status` whenever a linked backlog entry, phase, or task changes status; add a feature directory or subfeature file whenever planning produces a behavior it does not yet show.
 
 ## Content Style
 

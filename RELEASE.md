@@ -9,10 +9,31 @@
 
 ## Consumer Upgrade Contract
 
-1. Install with `npx @jerrylusato/agents-setup init --workflow workflow-contract --yes`.
+1. Install by adding `git@github.com:danfordChris/workflow-doc.git` as the `.agents/workflows/workflow-contract` submodule, then run `make -C .agents/workflows/workflow-contract check`.
 2. Follow the migration guide in `compatibility/migrate-vX.Y-to-vA.B.md` when present.
 3. Run validator and confirm `WORKFLOW:ok`.
 4. Merge only after compatibility is confirmed.
+
+---
+
+## Unreleased
+
+Additive — no breaking changes.
+
+### Added
+
+- `spec/feature-inventory-spec.md` — policy for the cross-phase feature register: directory layout (`docs/implementation/feature-inventory/<feature>/<subfeature>.md`), layer rules, `Derivation` (split mirrors `docs/design/`; populated as the backlog/phases/tasks are built), required sections per file type, status vocabulary (`Done` / `In Progress` / `In Review` / `Pending` / `Blocked`), subfeature fields, update triggers keyed to backlog/phase/task creation and status changes.
+- `templates/feature-inventory/` — reusable templates: inventory `README.md`, per-feature `feature-README.md`, per-subfeature `subfeature.md`.
+
+### Changed
+
+- `spec/workflow-spec.md` — new "Feature Inventory" section; operating-loop step 6 now names the directory register and its sync-with-planning rule.
+- `scripts/validate_metadata.py` — `METADATA` validates the inventory `README.md`, every `<feature>/README.md`, and every `<feature>/<subfeature>.md` heading set **only when `docs/implementation/feature-inventory/` exists**; repos without the directory are unaffected.
+- `templates/implementation-phase.md` — `Included Features` references feature-inventory subfeature files by path.
+- `templates/implementation-task.md` — `Linked Phase` names the feature-inventory subfeature(s) the task delivers.
+- `repo.config.json` — added `paths.implementation_feature_inventory` (directory path).
+- `README.md` — package contents mention the new spec and template directory.
+- `.agents/skills/workflow-contract-companion/SKILL.md` — canonical source #5 + a Step 3 layer-rule bullet for the feature rollup directory.
 
 ---
 
@@ -28,7 +49,7 @@
 
 - Bootstrap now uses `.agents/skills` directly and links Claude/Junie to that store.
 - Bootstrap no longer creates a `GEMINI.md` bridge.
-- Consumer onboarding is CLI-first through `npx @jerrylusato/agents-setup`.
+- Consumer onboarding is submodule-first via `danfordChris/workflow-doc`.
 
 ---
 

@@ -8,6 +8,7 @@
     "design": "docs/design",
     "implementation": "docs/implementation",
     "implementation_project": "docs/implementation/project.md",
+    "implementation_feature_inventory": "docs/implementation/feature-inventory",
     "implementation_phases": "docs/implementation/phases",
     "implementation_tasks": "docs/implementation/tasks",
     "implementation_status": "docs/implementation/status",

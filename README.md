@@ -29,8 +29,6 @@ Humans lead the high-judgment work: framing, research, tradeoffs, decisions, and
 
 Agents help structure documentation, execute planned work, validate workflow rules, and keep implementation aligned with approved truth.
 
-Read more on this thought process: https://gist.github.com/astrojose/013efbabaf70b7d39c085b0b0fe75063
-
 | Layer | Name | Purpose | Output |
 |---|---|---|---|
 | 0 | Change Intake / Discovery | Explore foggy work, research open questions, capture decision maps and proposals | `docs/changes/wayfinding/*`, `docs/changes/proposed/*` |
@@ -89,23 +87,16 @@ flowchart LR
 Run from the new repository root:
 
 ```bash
-npx @jerrylusato/agents-setup init --workflow workflow-contract --yes
+git submodule add git@github.com:danfordChris/workflow-doc.git .agents/workflows/workflow-contract
+git submodule update --init --recursive
+make -C .agents/workflows/workflow-contract check
 ```
 
-Plain `agents-setup init` only creates agent wiring and does not create `docs/`.
-
-The workflow setup command downloads this private workflow from authenticated GitHub release assets, installs the workflow, and then creates the workflow-owned docs scaffold:
+`make check` installs the workflow and creates the workflow-owned docs scaffold under:
 
 ```text
 .agents/skills/workflow-contract/
 .agents/workflows/workflow-contract/
-```
-
-Manual fallback:
-
-```bash
-git submodule add git@github.com:danfordChris/workflow-doc.git .agents/workflows/workflow-contract
-make -C .agents/workflows/workflow-contract check
 ```
 
 Then review `AGENTS.md` and add the workflow snippet below when needed.
@@ -197,8 +188,8 @@ Use `docs/changes/wayfinding` when the route is too foggy to propose directly.
 
 ## Package Contents
 
-- `spec/`: canonical workflow policy, lifecycle, guardrails, and task standard
-- `templates/`: reusable document templates
+- `spec/`: canonical workflow policy, lifecycle, guardrails, task standard, and feature-inventory policy
+- `templates/`: reusable document templates, including the `feature-inventory/` directory templates
 - `scripts/validate_workflow.py`: canonical workflow validator
 - `compatibility/`: migration guides and compatibility shims
 - `examples/`: example documentation and workflow usage
@@ -260,7 +251,7 @@ This repository contains multiple skills under `.agents/skills/`, so the repo pa
 
 ## Companion Skills
 
-The contract gives you the rules. The imported Matt Pocock skills fill in the operator playbooks around those rules.
+The contract gives you the rules. The companion skills fill in the operator playbooks around those rules.
 
 Recommended fit:
 
