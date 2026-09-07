@@ -1,3 +1,14 @@
+"""Regenerate workflow-contract-onboarding-guide.docx.
+
+One-off tool, not part of `make check` or the validator pipeline (those are
+stdlib-only). Prerequisite:
+
+    pip install python-docx
+
+The committed .docx is the reproducible output. Rebuilding the rendered
+PDF/PNG additionally needs LibreOffice or pandoc.
+"""
+
 from docx import Document
 from docx.enum.section import WD_SECTION
 from docx.enum.style import WD_STYLE_TYPE
