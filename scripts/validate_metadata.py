@@ -120,7 +120,9 @@ def main() -> int:
         "implementation_feature_inventory", "docs/implementation/feature-inventory"
     )
     feature_inventory_path = ROOT / feature_inventory_rel
-    if feature_inventory_path.is_dir():
+    if feature_inventory_path.exists() and not feature_inventory_path.is_dir():
+        errors.append(f"METADATA:{feature_inventory_rel}:expected-directory")
+    elif feature_inventory_path.is_dir():
         index_path = feature_inventory_path / "README.md"
         if not index_path.is_file():
             errors.append(f"METADATA:{feature_inventory_rel}/README.md:missing-file")
