@@ -63,7 +63,7 @@ python3 .agents/workflows/workflow-contract/scripts/validate_workflow.py
 ```md
 ## Documentation Workflow
 
-Use `$workflow-contract` for:
+Use `$workflow` for:
 
 - design docs
 - implementation docs

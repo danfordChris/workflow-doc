@@ -139,7 +139,7 @@ doc.add_paragraph(
 )
 doc.add_paragraph(
     "This repository contains both the canonical workflow package and a publishable companion skill, "
-    "`workflow-contract-companion`, which helps an agent classify work correctly and generate PRD and TRD artifacts without collapsing design and implementation layers."
+    "`workflow`, which helps an agent classify work correctly and generate PRD and TRD artifacts without collapsing design and implementation layers."
 )
 
 add_heading(doc, "2. Core Concepts", 1)
@@ -180,7 +180,7 @@ add_bullet(doc, "`spec/`: canonical workflow policy, lifecycle, guardrails, and 
 add_bullet(doc, "`scripts/validate_workflow.py`: validator for structure, metadata, readiness, scope conflicts, transitions, and references.")
 add_bullet(doc, "`templates/`: reusable workflow document templates.")
 add_bullet(doc, "`docs/`: example and live documentation scaffold owned by the workflow.")
-add_bullet(doc, "`.agents/skills/workflow-contract-companion/`: publishable companion skill for operator guidance and PRD/TRD generation.")
+add_bullet(doc, "`.agents/skills/workflow/`: publishable companion skill for operator guidance and PRD/TRD generation.")
 add_bullet(doc, "`AGENTS.md`: repository startup instructions and workflow authority declaration.")
 
 add_heading(doc, "5. Installation Paths", 1)
@@ -226,16 +226,16 @@ add_code_block(
     doc,
     [
         "npx skills add danfordChris/workflow-doc",
-        "npx skills add danfordChris/workflow-doc --skill workflow-contract-companion",
+        "npx skills add danfordChris/workflow-doc --skill workflow",
     ],
 )
 add_bullet(doc, "The install flow is interactive and asks which agents to install to, the installation scope, and the installation method.")
 add_bullet(doc, "A symlink-based project installation is typically the simplest local setup.")
-add_bullet(doc, "The repository was successfully discovered by `skills` and exposes `workflow-contract-companion` as an installable skill.")
+add_bullet(doc, "The repository was successfully discovered by `skills` and exposes `workflow` as an installable skill.")
 
 add_heading(doc, "6. How The Skill Works", 1)
 doc.add_paragraph(
-    "The `workflow-contract-companion` skill is not the canonical workflow policy. "
+    "The `workflow` skill is not the canonical workflow policy. "
     "It is an operator playbook that routes agents through the repo's actual source of truth."
 )
 add_bullet(doc, "First it classifies the request by layer, lifecycle state, and agent mode.")
@@ -251,7 +251,7 @@ for item in [
     "Read `spec/workflow-spec.md`, `spec/guardrails-spec.md`, `spec/lifecycle-spec.md`, and `spec/task-spec.md` in that order.",
     "Read `AGENTS.md` to understand repo-specific startup rules.",
     "Run the validator once so you know what a passing repo looks like.",
-    "Inspect the companion skill at `.agents/skills/workflow-contract-companion/SKILL.md`.",
+    "Inspect the companion skill at `.agents/skills/workflow/SKILL.md`.",
     "Install the skill locally if you will operate through the `skills` CLI.",
     "Create one sample PRD and one sample TRD so the layer separation becomes concrete.",
 ]:
@@ -308,7 +308,7 @@ commands = [
     ("make -C .agents/workflows/workflow-contract check", "Bootstrap and validate the installed workflow."),
     ("python3 .agents/workflows/workflow-contract/scripts/validate_workflow.py", "Run the canonical validator directly."),
     ("npx skills add danfordChris/workflow-doc", "Install the repository as a skills source."),
-    ("npx skills add danfordChris/workflow-doc --skill workflow-contract-companion", "Install only the PRD/TRD-capable companion skill."),
+    ("npx skills add danfordChris/workflow-doc --skill workflow", "Install only the PRD/TRD-capable companion skill."),
 ]
 for command, purpose in commands:
     cells = cmd_table.add_row().cells
@@ -327,7 +327,7 @@ add_code_block(
     [
         "1. Read AGENTS.md and spec/workflow-spec.md.",
         "2. Run the validator once.",
-        "3. Install the workflow-contract-companion skill if you use the skills CLI.",
+        "3. Install the workflow skill if you use the skills CLI.",
         "4. Draft a PRD in docs/design/ for one small feature.",
         "5. Draft the matching TRD in docs/implementation/.",
         "6. Ask the reviewer to check that design truth and implementation planning stayed separate.",

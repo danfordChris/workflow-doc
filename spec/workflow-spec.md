@@ -40,7 +40,7 @@ Use companion skills to strengthen each phase. The workflow contract remains the
 ## Skill Boundaries
 
 - This repo's canonical workflow authority is `spec/*` plus `scripts/validate_workflow.py`.
-- If another installed skill is also named `workflow-contract`, do not treat it as authoritative for this repo unless its content has been intentionally merged here.
+- If another installed skill is also named `workflow`, do not treat it as authoritative for this repo unless its content has been intentionally merged here.
 - `to-spec` and `to-tickets` may draft artifacts quickly, but their output must still satisfy this repo's layer and readiness rules.
 - `handoff` is preferred whenever a session becomes recap-heavy or exceeds its `Session Budget`.
 - Companion-skill enforcement should start as recommended guidance and move into validators only after local measurement proves the rule is worth the friction.

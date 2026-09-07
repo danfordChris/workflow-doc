@@ -18,7 +18,7 @@
 
 ## Unreleased
 
-Additive — no breaking changes.
+Additive for the workflow package. The companion skill is renamed (see below).
 
 ### Added
 
@@ -33,7 +33,12 @@ Additive — no breaking changes.
 - `templates/implementation-task.md` — `Linked Phase` names the feature-inventory subfeature(s) the task delivers.
 - `repo.config.json` — added `paths.implementation_feature_inventory` (directory path).
 - `README.md` — package contents mention the new spec and template directory.
-- `.agents/skills/workflow-contract-companion/SKILL.md` — canonical source #5 + a Step 3 layer-rule bullet for the feature rollup directory.
+- `.agents/skills/workflow/SKILL.md` — canonical source #5 + a Step 3 layer-rule bullet for the feature rollup directory.
+
+### Renamed
+
+- Companion skill `workflow-contract-companion` → `workflow` (directory `.agents/skills/workflow-contract-companion/` → `.agents/skills/workflow/`; SKILL.md `name:`, `skills-lock.json` key, `workflow.json` `skill`, `skills.sh.json`, `agents/openai.yaml` `$workflow` trigger). Install with `npx skills add danfordChris/workflow-doc --skill workflow`. Consumers using the old `--skill workflow-contract-companion` must update the name.
+- `init_workflow_contract.py` `SKILL_SOURCE` and `workflow_paths.SKILL_INSTALL_ROOT` now both resolve to `.agents/skills/workflow`, so `make check` no longer aborts with `INIT:error:Missing source skill directory` on a fresh checkout.
 
 ---
 

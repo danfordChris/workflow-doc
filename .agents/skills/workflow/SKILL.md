@@ -1,5 +1,5 @@
 ---
-name: workflow-contract-companion
+name: workflow
 description: Companion reference for repositories that intentionally adopt the workflow contract, including generation of PRD and TRD artifacts without violating layer boundaries; do not treat this as canonical over the repository's own `spec/*`.
 ---
 

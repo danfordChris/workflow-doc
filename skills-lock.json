@@ -121,10 +121,10 @@
       "skillPath": "skills/engineering/wayfinder/SKILL.md",
       "computedHash": "3eb72cd9abdfaa00e10fa69f0b4410ff8639a6cf4eb9e5d187b289c3aa9be2fc"
     },
-    "workflow-contract-companion": {
+    "workflow": {
       "source": "danfordChris/workflow-doc",
       "sourceType": "github",
-      "skillPath": ".agents/skills/workflow-contract-companion/SKILL.md",
+      "skillPath": ".agents/skills/workflow/SKILL.md",
       "computedHash": "de8bb173a5e47a5762c521e2c59a8e228a3fea206aa119882ca93416c8a834cb"
     }
   }

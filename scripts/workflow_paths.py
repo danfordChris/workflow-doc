@@ -4,8 +4,9 @@ from pathlib import Path
 
 
 WORKFLOW_NAME = "workflow-contract"
+SKILL_NAME = "workflow"
 WORKFLOW_INSTALL_ROOT = Path(".agents") / "workflows" / WORKFLOW_NAME
-SKILL_INSTALL_ROOT = Path(".agents") / "skills" / WORKFLOW_NAME
+SKILL_INSTALL_ROOT = Path(".agents") / "skills" / SKILL_NAME
 
 
 def workflow_root() -> Path:

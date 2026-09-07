@@ -21,4 +21,4 @@
 - Review: `code-review`, `qa`, `handoff`
 - Debugging: `diagnosing-bugs`
 
-If an imported skill is also named `workflow-contract`, treat this repository's `spec/*` as authoritative unless the difference has been intentionally merged here.
+If an imported skill is also named `workflow`, treat this repository's `spec/*` as authoritative unless the difference has been intentionally merged here.

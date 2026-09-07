@@ -1,8 +1,8 @@
 agent:
-  name: workflow-contract
+  name: workflow
   short_description: "Route docs work through the workflow contract"
   default_prompt: |
-    Use $workflow-contract.
+    Use $workflow.
     Before touching any file:
     1. Classify layer (design | implementation | changes/proposed), lifecycle state, and agent mode (Thinking | Execution | Review).
     2. Bootstrap structure if missing.

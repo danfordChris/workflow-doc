@@ -19,7 +19,7 @@ from workflow_paths import (
 ROOT = project_root()
 WORKFLOW_ROOT = workflow_root()
 CONFIG_PATH = config_path()
-SKILL_SOURCE = WORKFLOW_ROOT / ".agents/skills/workflow-contract"
+SKILL_SOURCE = WORKFLOW_ROOT / ".agents/skills/workflow"
 SKILL_TARGET = ROOT / SKILL_INSTALL_ROOT
 
 
