@@ -116,6 +116,52 @@ def main() -> int:
         rel = project_path.relative_to(ROOT).as_posix()
         errors.append(f"METADATA:{rel}:missing-sections:{','.join(project_missing)}")
 
+    feature_inventory_rel = config["paths"].get(
+        "implementation_feature_inventory", "docs/implementation/feature-inventory"
+    )
+    feature_inventory_path = ROOT / feature_inventory_rel
+    if feature_inventory_path.exists() and not feature_inventory_path.is_dir():
+        errors.append(f"METADATA:{feature_inventory_rel}:expected-directory")
+    elif feature_inventory_path.is_dir():
+        index_path = feature_inventory_path / "README.md"
+        if not index_path.is_file():
+            errors.append(f"METADATA:{feature_inventory_rel}/README.md:missing-file")
+        else:
+            fi_text = index_path.read_text(encoding="utf-8", errors="ignore")
+            fi_required = ["Purpose", "Legend", "Feature Index", "Capability Outlook", "Maintenance"]
+            fi_missing = [h for h in fi_required if not has_heading(fi_text, h)]
+            if fi_missing:
+                errors.append(
+                    f"METADATA:{feature_inventory_rel}/README.md:missing-sections:{','.join(fi_missing)}"
+                )
+        for feature_dir in sorted(p for p in feature_inventory_path.iterdir() if p.is_dir()):
+            feature_rel = feature_dir.relative_to(ROOT).as_posix()
+            feature_readme = feature_dir / "README.md"
+            if not feature_readme.is_file():
+                errors.append(f"METADATA:{feature_rel}/README.md:missing-file")
+            else:
+                fr_text = feature_readme.read_text(encoding="utf-8", errors="ignore")
+                fr_required = ["Feature", "Description", "Capability Leverage", "Status", "Subfeature Index"]
+                fr_missing = [h for h in fr_required if not has_heading(fr_text, h)]
+                if fr_missing:
+                    errors.append(
+                        f"METADATA:{feature_rel}/README.md:missing-sections:{','.join(fr_missing)}"
+                    )
+            subfeature_files = sorted(
+                p for p in feature_dir.glob("*.md") if p.name != "README.md"
+            )
+            if not subfeature_files:
+                errors.append(f"METADATA:{feature_rel}:no-subfeature-files")
+            for sub in subfeature_files:
+                sub_rel = sub.relative_to(ROOT).as_posix()
+                sub_text = sub.read_text(encoding="utf-8", errors="ignore")
+                sub_required = ["Description", "Capability Leverage", "Status", "Evidence"]
+                sub_missing = [h for h in sub_required if not has_heading(sub_text, h)]
+                if sub_missing:
+                    errors.append(
+                        f"METADATA:{sub_rel}:missing-sections:{','.join(sub_missing)}"
+                    )
+
     status_text = status_path.read_text(encoding="utf-8", errors="ignore")
     if not re.search(r"^##\s+\d{4}-\d{2}-\d{2}", status_text, re.MULTILINE):
         rel = status_path.relative_to(ROOT).as_posix()

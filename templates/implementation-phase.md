@@ -17,6 +17,7 @@
 
 ## Included Features
 
+- Reference feature-inventory subfeature files by path: `docs/implementation/feature-inventory/<feature>/<subfeature>.md`
 -
 
 ## Task Checklist

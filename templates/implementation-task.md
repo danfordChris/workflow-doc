@@ -7,7 +7,8 @@
 
 ## Linked Phase
 
--
+- Phase:
+- Feature-inventory subfeature(s): `docs/implementation/feature-inventory/<feature>/<subfeature>.md`
 
 ## Agent Context
 

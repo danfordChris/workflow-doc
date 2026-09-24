@@ -29,8 +29,6 @@ Humans lead the high-judgment work: framing, research, tradeoffs, decisions, and
 
 Agents help structure documentation, execute planned work, validate workflow rules, and keep implementation aligned with approved truth.
 
-Read more on this thought process: https://gist.github.com/astrojose/013efbabaf70b7d39c085b0b0fe75063
-
 | Layer | Name | Purpose | Output |
 |---|---|---|---|
 | 0 | Change Intake / Discovery | Explore foggy work, research open questions, capture decision maps and proposals | `docs/changes/wayfinding/*`, `docs/changes/proposed/*` |
@@ -84,28 +82,57 @@ flowchart LR
     Z["Implementation shortcut"] -. forbidden .-> B
 ```
 
+## From Idea to Docs
+
+Handing an agent an idea does **not** auto-generate a PRD, TRD, feature inventory, or tasks. The contract is policy, templates, a companion skill, and a validator — not a generator. An agent with the `workflow` skill loaded produces the docs **step by step, with a human approval gate before promotion into `docs/design/`**.
+
+```mermaid
+flowchart TD
+    Idea["Idea (chat)"] --> Classify["Agent classifies:<br/>layer, lifecycle state, mode"]
+    Classify --> Foggy{"Route still<br/>foggy?"}
+    Foggy -- yes --> Way["Agent drafts map<br/>docs/changes/wayfinding/"]
+    Foggy -- "no, concrete but<br/>unresolved" --> Prop["Agent drafts proposal<br/>docs/changes/proposed/"]
+    Way --> Prop
+    Prop --> Approve{"Human approves?"}
+    Approve -- no --> Prop
+    Approve -- yes --> PRD["Agent writes PRD<br/>docs/design/&lt;feature&gt;.md"]
+    PRD --> TRD["Agent derives TRD<br/>docs/implementation/&lt;feature&gt;.md"]
+    TRD --> Plan["Agent breaks into phases + tasks;<br/>registers docs/implementation/feature-inventory/"]
+    Plan --> Ready{"Task passes<br/>readiness gate?"}
+    Ready -- no --> Plan
+    Ready -- yes --> Exec["Execution: one bounded task per session"]
+    Exec --> Rev["Review: standards + spec, reconcile docs"]
+
+    Validator(["validate_workflow.py"]) -. shape check .-> Prop
+    Validator -. shape + readiness check .-> Plan
+```
+
+The single human approval gate is `proposed` → `docs/design/`. `Ideas do not become truth by being written.` Everything downstream of an approved design doc is agent work under that approval; the readiness gate (`Task passes readiness gate?`) is a script check, not a second human sign-off.
+
+What is and is not automatic:
+
+- **Not automatic**: authoring any doc. The agent writes them by following the companion skill; nothing is emitted from the idea in one shot.
+- **Not enforced**: that a given feature *has* a PRD or TRD, or that a PRD is well-formed. `validate_metadata.py` does not inspect `docs/design/` — a missing or malformed design doc passes.
+- **Enforced**: shape of proposals, tasks, phases, reviews, and the feature inventory (`METADATA`); task readiness (`READINESS`); scope disjointness (`SCOPE`); legal status values (`TRANSITIONS`); required scaffold directories/files (`STRUCTURE`).
+- **Gated by a human**: promotion from `proposed` → `docs/design/`, and nowhere else.
+
+For a single command that scaffolds the wayfinding/proposal/PRD/TRD/task stubs in one pass, you would add a new skill or script — the contract does not ship one.
+
 ## New Project Setup
 
 Run from the new repository root:
 
 ```bash
-npx @jerrylusato/agents-setup init --workflow workflow-contract --yes
+git submodule add git@github.com:danfordChris/workflow-doc.git .agents/workflows/workflow-contract
+git submodule update --init --recursive
+make -C .agents/workflows/workflow-contract check
 ```
 
-Plain `agents-setup init` only creates agent wiring and does not create `docs/`.
-
-The workflow setup command downloads this private workflow from authenticated GitHub release assets, installs the workflow, and then creates the workflow-owned docs scaffold:
+`make check` installs the workflow and creates the workflow-owned docs scaffold under:
 
 ```text
-.agents/skills/workflow-contract/
+.agents/skills/workflow/
 .agents/workflows/workflow-contract/
-```
-
-Manual fallback:
-
-```bash
-git submodule add git@github.com:danfordChris/workflow-doc.git .agents/workflows/workflow-contract
-make -C .agents/workflows/workflow-contract check
 ```
 
 Then review `AGENTS.md` and add the workflow snippet below when needed.
@@ -166,7 +193,7 @@ Optional reinforcement:
 ```md
 ## Documentation Workflow
 
-Use `$workflow-contract` for:
+Use `$workflow` for:
 
 - design docs
 - implementation docs
@@ -197,8 +224,8 @@ Use `docs/changes/wayfinding` when the route is too foggy to propose directly.
 
 ## Package Contents
 
-- `spec/`: canonical workflow policy, lifecycle, guardrails, and task standard
-- `templates/`: reusable document templates
+- `spec/`: canonical workflow policy, lifecycle, guardrails, task standard, and feature-inventory policy
+- `templates/`: reusable document templates, including the `feature-inventory/` directory templates
 - `scripts/validate_workflow.py`: canonical workflow validator
 - `compatibility/`: migration guides and compatibility shims
 - `examples/`: example documentation and workflow usage
@@ -206,7 +233,7 @@ Use `docs/changes/wayfinding` when the route is too foggy to propose directly.
 
 ## Available Skills
 
-### workflow-contract-companion
+### workflow
 
 Companion skill for repositories that intentionally adopt the workflow contract.
 
@@ -220,7 +247,7 @@ Use it to:
 
 Primary skill file:
 
-- `.agents/skills/workflow-contract-companion/SKILL.md`
+- `.agents/skills/workflow/SKILL.md`
 
 ## Installation
 
@@ -233,10 +260,10 @@ npx skills add danfordChris/workflow-doc
 Install the workflow contract companion skill directly:
 
 ```bash
-npx skills add danfordChris/workflow-doc --skill workflow-contract-companion
+npx skills add danfordChris/workflow-doc --skill workflow
 ```
 
-After installation, ask the agent to use `workflow-contract-companion` when generating PRD and TRD artifacts for a repo that follows this workflow.
+After installation, ask the agent to use `workflow` when generating PRD and TRD artifacts for a repo that follows this workflow.
 
 ## Showing On skills.sh
 
@@ -248,7 +275,7 @@ For this repo to appear there:
 2. Install it at least once with `npx skills add danfordChris/workflow-doc`.
 3. Wait for telemetry ingestion and cache refresh.
 
-This repository contains multiple skills under `.agents/skills/`, so the repo page will list more than just `workflow-contract-companion`.
+This repository contains multiple skills under `.agents/skills/`, so the repo page will list more than just `workflow`.
 
 ## Production Upgrades
 
@@ -260,7 +287,7 @@ This repository contains multiple skills under `.agents/skills/`, so the repo pa
 
 ## Companion Skills
 
-The contract gives you the rules. The imported Matt Pocock skills fill in the operator playbooks around those rules.
+The contract gives you the rules. The companion skills fill in the operator playbooks around those rules.
 
 Recommended fit:
 
@@ -277,7 +304,7 @@ Recommended fit:
 Guardrails:
 
 - This repository's canonical workflow remains `spec/*` plus `scripts/validate_workflow.py`.
-- Do not let the imported `workflow-contract` skill override this repository's workflow policy without intentionally merging the differences here.
+- Do not let the imported `workflow` skill override this repository's workflow policy without intentionally merging the differences here.
 - Skill output is provisional until it satisfies the contract's layer rules, readiness gate, and validator checks.
 - Companion-skill usage is recommended first. Tight enforcement should follow only after local measurement shows it improves throughput or defect rate.
 

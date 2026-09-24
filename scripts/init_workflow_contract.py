@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import sys
@@ -19,7 +20,7 @@ from workflow_paths import (
 ROOT = project_root()
 WORKFLOW_ROOT = workflow_root()
 CONFIG_PATH = config_path()
-SKILL_SOURCE = WORKFLOW_ROOT / ".agents/skills/workflow-contract"
+SKILL_SOURCE = WORKFLOW_ROOT / ".agents/skills/workflow"
 SKILL_TARGET = ROOT / SKILL_INSTALL_ROOT
 
 
@@ -77,11 +78,39 @@ def ensure_symlink(path: Path, target: str, dry_run: bool) -> None:
         path.symlink_to(target)
 
 
-def copy_skill_source(dry_run: bool) -> None:
-    if SKILL_TARGET.exists():
-        return
+def _tree_signature(root: Path) -> dict[str, str]:
+    sig: dict[str, str] = {}
+    for path in sorted(root.rglob("*")):
+        if path.is_file():
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            sig[path.relative_to(root).as_posix()] = digest
+    return sig
+
+
+def copy_skill_source(dry_run: bool, force: bool = False) -> None:
     if not SKILL_SOURCE.exists():
         raise InitError(f"Missing source skill directory: {SKILL_SOURCE}")
+    if SKILL_TARGET.exists():
+        if SKILL_TARGET.resolve() == SKILL_SOURCE.resolve():
+            return
+        if not SKILL_TARGET.is_dir():
+            raise InitError(
+                f"{SKILL_TARGET.relative_to(ROOT)} exists but is not a directory. "
+                f"Move or remove it, then rerun."
+            )
+        if _tree_signature(SKILL_TARGET) == _tree_signature(SKILL_SOURCE):
+            return
+        if not force:
+            raise InitError(
+                f"{SKILL_TARGET.relative_to(ROOT)} differs from the bundled skill "
+                f"({SKILL_SOURCE}). It is a different or stale skill. "
+                f"Move it aside, or rerun with --force to overwrite it with the bundled version."
+            )
+        print(f"refresh skill: {SKILL_TARGET.relative_to(ROOT)}")
+        if not dry_run:
+            shutil.rmtree(SKILL_TARGET)
+            shutil.copytree(SKILL_SOURCE, SKILL_TARGET)
+        return
     print(f"copy skill: {SKILL_SOURCE} -> {SKILL_TARGET.relative_to(ROOT)}")
     if not dry_run:
         SKILL_TARGET.parent.mkdir(parents=True, exist_ok=True)
@@ -143,6 +172,11 @@ def ensure_required_structure(config: dict, dry_run: bool) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Initialize workflow-contract structure and links.")
     parser.add_argument("--dry-run", action="store_true", help="Print actions only")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite an existing .agents/skills/workflow that differs from the bundled skill",
+    )
     args = parser.parse_args()
 
     try:
@@ -150,7 +184,7 @@ def main() -> int:
 
         ensure_dir(ROOT / ".agents" / "skills", dry_run=args.dry_run)
         ensure_dir(ROOT / ".agents" / "workflows", dry_run=args.dry_run)
-        copy_skill_source(dry_run=args.dry_run)
+        copy_skill_source(dry_run=args.dry_run, force=args.force)
 
         ensure_dir(ROOT / ".claude", dry_run=args.dry_run)
         ensure_dir(ROOT / ".junie", dry_run=args.dry_run)

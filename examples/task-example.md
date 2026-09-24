@@ -11,7 +11,7 @@
 
 ## Agent Context
 
-- Skills: workflow-contract, handoff
+- Skills: workflow, handoff
 - Design docs: docs/design/architecture/system-overview.md
 - Constraints: docs changes only; no service code edits
 - Do not touch: services/

@@ -9,13 +9,14 @@ Use this sequence when onboarding `.agents/workflows/workflow-contract` into a d
 
 ## Bootstrap Sequence
 
-Plain `agents-setup init` only creates agent wiring and does not create `docs/`. Use the workflow setup when this workflow contract should own the repo docs scaffold.
+Add this workflow contract as a submodule when it should own the repo docs scaffold.
 
-1. Run the public no-clone setup CLI:
+1. Add the workflow contract as a submodule:
    ```bash
-   npx @jerrylusato/agents-setup init --workflow workflow-contract --yes
+   git submodule add git@github.com:danfordChris/workflow-doc.git .agents/workflows/workflow-contract
+   git submodule update --init --recursive
    ```
-2. Run validation when you need an explicit check:
+2. Bootstrap and validate:
    ```bash
    make -C .agents/workflows/workflow-contract check
    ```
@@ -23,14 +24,6 @@ Plain `agents-setup init` only creates agent wiring and does not create `docs/`.
 4. Tune `.agents/workflows/workflow-contract/repo.config.json` for your repo paths and constraints.
 
 `make check` does not edit an existing `AGENTS.md`. Add the snippet manually so repo-specific agent instructions stay intentional.
-
-Manual fallback:
-
-```bash
-git submodule add git@github.com:danfordChris/workflow-doc.git .agents/workflows/workflow-contract
-git submodule update --init --recursive
-make -C .agents/workflows/workflow-contract check
-```
 
 Done when:
 
@@ -70,7 +63,7 @@ python3 .agents/workflows/workflow-contract/scripts/validate_workflow.py
 ```md
 ## Documentation Workflow
 
-Use `$workflow-contract` for:
+Use `$workflow` for:
 
 - design docs
 - implementation docs
